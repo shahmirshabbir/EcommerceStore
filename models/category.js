@@ -1,5 +1,6 @@
 const db = require('../config/db')
 const helper = require("../helper")
+const product = require("./products")
 
 // exports.getCategory  = (id, callback) =>{
 //     db.query('Select * from products where id = ?',id , (err , results)=>{
@@ -8,25 +9,28 @@ const helper = require("../helper")
 //     })
 // }
 
-exports.addCategory = (name ,count, imgPath ,callback)=>{
+exports.addCategory = async (name ,count, imgPath)=>{
     // const {name , cat , description , price , img } = item
     // console.log(name , cat , description , price , imgPath ,val)
     let query = "INSERT INTO category (name , count,  img ) VALUES (?,?,?)"
-    db.query(query , [name , parseInt(count, 10) , imgPath ] , callback)
+    return await db.execute(query , [name , parseInt(count, 10) , imgPath ])
 }
 
-exports.deleteCategory = (id , callback)=>{
+exports.deleteCategory = async (id )=>{
+    const imgs = await product.getImgByCat(id) 
+    imgs[0].forEach(i => helper.delImg(i.img));
+    // console.log(imgs) 
+    // return imgs[0][0].img
     let query = "Select img from category where id = ?"
-    db.query(query , id, (err, result)=>{
-        helper.delImg(result)
-    })
+    const [result] = await db.execute(query , [id])
+        helper.delImg(result[0].img)
 
-    db.query("DELETE from category where id =?",id , callback)
+    return await db.execute("DELETE from category where id =?",[id])
 }
 
-exports.getAllCategory = (callback)=>{
+exports.getAllCategory = async()=>{
     let query = "Select * from category "
-    db.query(query , callback)
+    return await db.execute(query)
 }
 
 // exports.getByCat = (cat , callback) =>{
@@ -59,30 +63,26 @@ exports.getAllCategory = (callback)=>{
 //     db.query(query , img ,id ,callback)
 // }
 
-exports.updateCategory = ( id, name ,count, imgPath, callback)=>{
+exports.updateCategory = async( id, name ,count, imgPath)=>{
     let q1 = "Select img from category where id = ?"
-    db.query(q1 , id, (err, result)=>{
-        helper.delImg(result)
-    })
+    const [rows] = await db.execute(q1 , [id])
+        helper.delImg(rows[0].img)
 
     let query = "UPDATE category SET name=? , count=?, img=? where id =?"
-    db.query(query ,[name , parseInt(count, 10) , imgPath , id]  ,callback)
+    return await db.execute(query ,[name , parseInt(count, 10) , imgPath , id] )
 }
 
-exports.updateCount = (id , val , callback)=>{
-    let temp =0;
+exports.updateCount = async(id , val)=>{
+    // let temp =0;
     // console.log(id)
-    db.execute("Select count from category where id = ?", id ,(err , result)=>{
-        if(err) console.log(err)
-        val = result[0].count + val
-    })
+    const [rows] = await db.execute("Select count from category where id = ?", [id])
     // console.log("count: ", val)
     let query = "UPDATE category SET count = ?  where id =?"
-    db.query(query , [val, id ] ,callback)
+    return await db.query(query , [val+rows[0].count, id ])
 }
 
-exports.getCount = (id , callback)=>{
+exports.getCount = async (id)=>{
     
     const query = "Select count from category where id = ?";
-    db.query(query , id , callback)
+    return await db.execute(query , [id])
 }

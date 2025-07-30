@@ -8,7 +8,7 @@ exports.getProduct = async (id) =>{
 }
 
 exports.addProduct = async (name , cat , description , price , imgPath ,val)=>{
-    // category.updateCount(cat, 1);
+    category.updateCount(cat, 1);
     let query = "INSERT INTO products (name , cat , description , price , img, count ) VALUES (?,?,?,?,?,?)"
     return await db.execute(query , [name , parseInt(cat, 10) , description , parseFloat(price) , imgPath ,parseInt(val, 10)])
 }
@@ -18,7 +18,7 @@ exports.deleteProduct = async (id)=>{
         const [rows] = await db.execute(query , [id])
         helper.delImg(rows[0].img)
         // cat = result[0].count
-        // category.updateCount(rows[0].cat, -1); 
+        category.updateCount(rows[0].cat, -1); 
         return await db.execute("DELETE from products where id =?",[id])
 }
   
@@ -30,6 +30,11 @@ exports.getAllProducts = async (page)=>{
 
 exports.getByCat = async (cat) =>{
     let query = "Select * from products where cat = ? "
+    return await db.execute(query , [cat])
+}
+
+exports.getImgByCat = async (cat) =>{
+    let query = "Select img from products where cat = ? "
     return await db.execute(query , [cat])
 }
 
@@ -65,7 +70,6 @@ exports.updateProduct = async ( id, name , cat , description , price , imgPath ,
 
         let query = "UPDATE products SET name=? , cat=? , description =?, price =?, img=? ,count =?  where id =?"
         return await db.execute(query ,[name , parseInt(cat, 10) , description , parseFloat(price) , imgPath ,parseInt(val, 10) , id])
-
 }
 
 exports.updateCount = async (id , val)=>{
