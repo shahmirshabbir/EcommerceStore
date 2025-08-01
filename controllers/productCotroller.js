@@ -65,3 +65,8 @@ exports.updateProduct = async (req , res)=>{
 res.status(500).json({ message: 'Something went wrong' , error : err});
     }
 }
+
+exports.checkApi = async (req , res)=>{
+    console.log(req.body)
+    return res.json("yes")
+}

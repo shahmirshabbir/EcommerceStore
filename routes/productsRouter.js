@@ -9,6 +9,7 @@ router.get('/',ProductControl.getAllProducts)
 router.delete('/:id',ProductControl.deleteProduct)
 router.put('/:id',upload.single('img'),ProductControl.updateProduct)
 router.post("/",upload.single('img'),ProductControl.addProduct)
+// router.post("/",upload.none(),ProductControl.checkApi)
 
 
 module.exports = router
