@@ -1,4 +1,5 @@
 from pydantic import BaseModel , EmailStr
+from datetime import datetime
 
 class UserCreate(BaseModel):
     email : EmailStr
@@ -9,6 +10,8 @@ class UserResponse(BaseModel):
     id: int
     email:EmailStr
     full_name : str
+    created_at: datetime
+    updated_at : datetime
 
     class Config:
-        orm_mode= True
+        from_attributes= True

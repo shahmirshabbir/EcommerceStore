@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession , create_async_engine 
 from sqlalchemy.orm import sessionmaker , declarative_base
 
-engine =  create_async_engine("postgresql+asyncpg://user:root@localhost/Store" , echo = True)
+engine =  create_async_engine("postgresql+asyncpg://store_user:store123@localhost/Store" , echo = True)
 
 localSession = sessionmaker(
     autoflush=False,

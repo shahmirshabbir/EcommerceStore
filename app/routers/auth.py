@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio  import AsyncSession
 from sqlalchemy import select
 
 from app.database import get_db
-from app.models import User
+from app.models.user import User
 from app.schemas.auth import Token
 from app.core.security import verify_password , create_token  , EXPIRE_TIME
 
